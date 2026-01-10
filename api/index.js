@@ -1,15 +1,18 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-
-dotenv.config();  // This loads .env from the root (where node is started)
+import userRoutes from './routes/user.route.js';
+dotenv.config();
+mongoose.connect(process.env.MONGO)
+  .then(() => console.log('→ Connected to MongoDB'))  
+  .catch((err) => console.error('MongoDB connection error:', err));
 
 const app = express();
-
-mongoose.connect(process.env.MONGO)
-  .then(() => console.log('Connected to MongoDB!'))
-  .catch(err => console.log('MongoDB connection error:', err));
+app.get('/test', (req, res) => {
+  res.json({ message: "This is a test endpoint", status: "working" });
+});
 
 app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+  console.log('→ Server running on http://localhost:3000');
 });
+app.use('/api/users', userRoutes);
